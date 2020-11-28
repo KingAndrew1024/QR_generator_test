@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Ionic QR Generator/Scanner
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding-horizontal">
+
+
+  <ion-list>
+    <ion-radio-group name="link-group" #linkGroup [value]="selectedLink">
+      <ion-list-header>
+        <h3>Elija un sitio web</h3>
+      </ion-list-header>
+
+      <ion-item *ngFor="let link of linkList" (click)="checkEvent(link)">
+        <ion-label>{{link}}</ion-label>
+        <ion-radio [value]="link"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+
+    <ion-button expand="full" (click)="createQr(selectedLink)" [disabled]="!selectedLink">Crear QR</ion-button>
+  </ion-list>
+
+  <ion-item *ngIf="qrValue">
+    <ion-range min="50" max="100" step="10" value="50" snaps color="success" [(ngModel)]="zoom"
+      (ionChange)="setQrZoom(zoom)">
+      <ion-icon slot="start" size="small" color="danger" name="remove-circle-outline"></ion-icon>
+      <ion-icon slot="end" color="danger" name="add-circle-outline"></ion-icon>
+    </ion-range>
+  </ion-item>
+
+  <div class="ion-text-center" *ngIf="qrValue">
+    <ngx-qrcode
+      class="aclass"
+      [elementType]="elementType"
+      [value]="qrValue"
+      cssClass="aclass"
+      errorCorrectionLevel="L">
+    </ngx-qrcode>
+
+    <a id="downladableQr" (click)="saveImage($event.target)">
+      <ion-icon name="download-outline"></ion-icon> Descargar
+    </a>
+
+    <img id="scaledImg" />
+    
+  </div>
+
+
+
+
+  <div class="ion-padding-top ion-margin-top" *ngIf="!selectedLink && qrText">
+    QR: <ion-text color="primary">{{qrText}}</ion-text>
+    <ion-button expand="full" (click)="openLink()">Abrir enlace</ion-button>
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="startScanning()">
+      <ion-icon name="camera"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
